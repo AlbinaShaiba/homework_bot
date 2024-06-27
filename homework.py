@@ -64,7 +64,8 @@ def send_message(bot, message):
             chat_id=TELEGRAM_CHAT_ID,
             text=message)
         logging.debug('Message sent successfully')
-    except (telebot.apihelper.ApiException, requests.RequestException) as error:
+    except (telebot.apihelper.ApiException,
+            requests.RequestException) as error:
         message_flag = False
     return message_flag
 
@@ -77,8 +78,10 @@ def get_api_answer(timestamp):
                                          params={'from_date': timestamp})
     except requests.RequestException as error:
         return error
+
     if not homework_statuses.status_code == HTTPStatus.OK:
         raise exceptions.HTTPStatusIsNotOK('The response status is Not 200')
+
     response = homework_statuses.json()
     return response
 
@@ -87,18 +90,21 @@ def check_response(response):
     """Checks params in the API response."""
     if not isinstance(response, dict):
         raise TypeError('Response is not an instance of a subtype of the dict type')
+
     if 'homeworks' not in response:
         raise KeyError('Response does not have valid params: homeworks')
+
     if not isinstance(response['homeworks'], list):
         raise TypeError('Param homeworks is not an instance of a subtype of the list type')
-
 
 
 def parse_status(homework):
     """Returns the satus of last homework."""
     status = homework['status']
+
     if 'homework_name' not in homework:
         raise KeyError('homework_name is not in dict')
+
     if not status:
         raise exceptions.HomeworkStatusIsNotDocumented(
             'The homework does not have a status'
@@ -108,6 +114,7 @@ def parse_status(homework):
         raise exceptions.HomeworkStatusIsNotDocumented(
             'The status of homework is not documented'
         )
+
     homework_name = homework['homework_name']
     verdict = HOMEWORK_VERDICTS[status]
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
