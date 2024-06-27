@@ -117,13 +117,14 @@ def parse_status(homework):
 
     homework_name = homework['homework_name']
     verdict = HOMEWORK_VERDICTS[status]
-    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
+    return f'Status changed "{homework_name}". {verdict}'
 
 
 def main():
     """Main func of the bot."""
     bot = telebot.TeleBot(token=TELEGRAM_TOKEN)
-    timestamp = int(time.time())
+   # timestamp = int(time.time())
+    timestamp = 1000000
     status = 'send'
     while True:
         try:
@@ -144,7 +145,8 @@ def main():
                     else:
                         logging.error('Error during sending the message')
         except Exception as error:
-            message = f'Сбой в работе программы: {error}'
+            message = f'Error while running the program: {error}'
+            logging.error(message)
         time.sleep(RETRY_PERIOD)
 
 
